@@ -1,7 +1,6 @@
 create table if not exists customer
 (
-    id         int auto_increment
-        primary key,
+    id int auto_increment primary key,
     first_name varchar(100) not null,
     last_name  varchar(100) not null,
     email      varchar(50)  not null
