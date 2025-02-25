@@ -9,18 +9,26 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/creditcards")
+@RequestMapping("/api/credit-cards")
 public class CreditCardController {
 
     private final CreditCardDAO creditCardDAO;
 
-    public CreditCardController() {
-        this.creditCardDAO = new CreditCardDAO(); // Initialize the DAO instance
+    public CreditCardController(CreditCardDAO creditCardDAO) {
+        this.creditCardDAO = creditCardDAO;
     }
 
-    // Endpoint to fetch the last four digits and token data for all credit cards
-    @GetMapping("/last-four-and-token")
-    public List<Map<String, String>> getCreditCardLastFourAndTokens() {
-        return creditCardDAO.getLastFourDigitsAndTokens(); // Calls DAO method
+    // Endpoint to fetch only the last four digits
+    @GetMapping("/last-four-digits")
+    public List<String> getLastFourDigits() {
+        return creditCardDAO.getLastFourDigits();
     }
+
+    // Endpoint to fetch only the credit card tokens
+    @GetMapping("/tokens")
+    public List<String> getCreditCardTokens() {
+        return creditCardDAO.getCreditCardTokens();
+    }
+
+
 }

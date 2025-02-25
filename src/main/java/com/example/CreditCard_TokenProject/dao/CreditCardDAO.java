@@ -12,27 +12,43 @@ import com.example.CreditCard_TokenProject.utility.DatabaseConnection;
 
 public class CreditCardDAO {
 
-    // Method to fetch the last four digits and tokens for all credit cards
-    public List<Map<String, String>> getLastFourDigitsAndTokens() {
-        String sql = "SELECT last_four_cc_digits, credit_card_token FROM credit_card"; // SQL query to fetch required fields
-        List<Map<String, String>> creditCards = new ArrayList<>();
+    // Fetches only the last four digits of credit cards
+    public List<String> getLastFourDigits() {
+        String sql = "SELECT last_four_cc_digits FROM credit_card";
+        List<String> lastFourDigits = new ArrayList<>();
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Map<String, String> creditCardData = new HashMap<>();
-                creditCardData.put("lastFourDigits", rs.getString("last_four_cc_digits"));
-                creditCardData.put("token", rs.getString("credit_card_token"));
-                creditCards.add(creditCardData);
+                lastFourDigits.add(rs.getString("last_four_cc_digits"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return creditCards;
+        return lastFourDigits;
     }
 
-    // Optionally, add a method to fetch data by customer ID, etc., if needed
+    // Fetches only the credit card tokens
+    public List<String> getCreditCardTokens() {
+        String sql = "SELECT credit_card_token FROM credit_card";
+        List<String> creditCardTokens = new ArrayList<>();
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                creditCardTokens.add(rs.getString("credit_card_token"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return creditCardTokens;
+    }
+
+
 }
