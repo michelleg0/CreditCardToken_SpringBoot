@@ -1,43 +1,38 @@
 package com.example.CreditCard_TokenProject.dao;
 
-import com.example.CreditCard_TokenProject.dto.CreditCardDTO;
-import com.example.CreditCard_TokenProject.utility.CreditCardTokenizer;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import com.example.CreditCard_TokenProject.utility.DatabaseConnection;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class CreditCardDAO {
 
-    //method inserts a credit card into the database
+    // Method to fetch the last four digits and tokens for all credit cards
+    public List<Map<String, String>> getLastFourDigitsAndTokens() {
+        String sql = "SELECT last_four_cc_digits, credit_card_token FROM credit_card"; // SQL query to fetch required fields
+        List<Map<String, String>> creditCards = new ArrayList<>();
 
-    public void insertCreditCard(CreditCardDTO creditCard) {
-        String sql = "INSERT INTO credit_card (credit_card_token, last_four_cc_digits, expiration_month, expiration_year, customer_id, payment_processor_id) VALUES (?, ?, ?, ?, ?, ?)";
-     // SQL query to insert a new credit card record
-        String token = CreditCardTokenizer.tokenize(creditCard.getCreditCardNumber());
-        String lastFourDigits = creditCard.getCreditCardNumber().substring(creditCard.getCreditCardNumber().length() - 4);
-
-        //try-with-resources to get a database connection and prepare the SQL statement
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            //Values for the placeholders in the SQL query
-            stmt.setString(1, token);
-            stmt.setString(2, lastFourDigits);
-            stmt.setByte(3, creditCard.getExpirationMonth());
-            stmt.setByte(4, creditCard.getExpirationYear());
-            stmt.setInt(5, creditCard.getCustomerId());
-            stmt.setInt(6, creditCard.getPaymentProcessorId());
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-            //Execute the SQL query to insert the new credit card record
-            stmt.executeUpdate();
+            while (rs.next()) {
+                Map<String, String> creditCardData = new HashMap<>();
+                creditCardData.put("lastFourDigits", rs.getString("last_four_cc_digits"));
+                creditCardData.put("token", rs.getString("credit_card_token"));
+                creditCards.add(creditCardData);
+            }
         } catch (SQLException e) {
-            // Prints the error details if an exception occurs
             e.printStackTrace();
         }
+
+        return creditCards;
     }
+
+    // Optionally, add a method to fetch data by customer ID, etc., if needed
 }

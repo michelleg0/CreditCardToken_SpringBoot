@@ -10,10 +10,20 @@ import java.util.List;
 @RequestMapping("/api/customers")  // Base URL for this controller
 public class CustomerController {
 
-    private final CustomerDAO customerDAO;
+    private CustomerDAO customerDAO;
 
     public CustomerController() {
         this.customerDAO = new CustomerDAO();  // Create DAO instance
+    }
+
+    // Getter for customerDAO
+    public CustomerDAO getCustomerDAO() {
+        return customerDAO;
+    }
+
+    // Setter for customerDAO
+    public void setCustomerDAO(CustomerDAO customerDAO) {
+        this.customerDAO = customerDAO;
     }
 
     // Fetch all customers
@@ -22,9 +32,9 @@ public class CustomerController {
         return customerDAO.getAllCustomers();  // Calls DAO method to fetch data
     }
 
-
     @GetMapping("/{id}")
     public Customer getCustomerById(@PathVariable int id) {
         return customerDAO.getCustomer(id);  // Calls DAO method to fetch customer
     }
 }
+
